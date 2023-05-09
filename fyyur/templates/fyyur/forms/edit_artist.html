@@ -1,58 +1,77 @@
-{% extends 'layouts/main.html' %}
+{% extends 'fyyur/layouts/main.html' %}
 {% block title %}Edit Artist{% endblock %}
 {% block content %}
   <div class="form-wrapper">
-    <form class="form" method="post" action="/artists/{{artist.id}}/edit">
-      <h3 class="form-heading">Edit artist <em>{{ artist.name }}</em></h3>
+    <form method="post" class="form" action="{% url 'edit_artist' artist_id=artist.id %}">
+      {% csrf_token %}
+      <h3 class="form-heading">edit artist <a href="{% url 'index' %}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
       <div class="form-group">
+
         <label for="name">Name</label>
-        {{ form.name(class_ = 'form-control', autofocus = true) }}
+        <input type="text" name="name" class ='form-control' value={{artist.name}} required>
       </div>
+
       <div class="form-group">
           <label>City & State</label>
           <div class="form-inline">
             <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
+              <input type="text" name="city" class ='form-control' placeholder='City' value={{artist.city}} required>
             </div>
+
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+              <select name="state" class ='form-control' value={{artist.state}} required>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+              </select>
             </div>
           </div>
       </div>
+
+      
       <div class="form-group">
           <label for="phone">Phone</label>
-          {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+          <input type="text" name="phone" class ='form-control' value={{artist.phone}}>
+
         </div>
       <div class="form-group">
         <label for="genres">Genres</label>
         <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true) }}
+        <select name="genres" class ='form-control' multiple required>
+          <option value="Alternative">Alternative</option>
+          <option value="Blues">Blues</option>
+          <option value="Classical">Classical</option>
+          <option value="Country">Country</option>
+          <option value="Electronic">Electronic</option>
+        </select>
       </div>
+      
       <div class="form-group">
           <label for="facebook_link">Facebook Link</label>
-          {{ form.facebook_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
-        </div>
+          <input type="text" name="facebook_link" class ='form-control' value={{artist.facebook_link}}>
+       </div>
       
-      <div class="form-group">
+       <div class="form-group">
           <label for="image_link">Image Link</label>
-          {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
-      </div>
+          <input type="text" name="image_link" class ='form-control' value={{artist.image_link}}>
+       </div>
 
-      <div class="form-group">
+       <div class="form-group">
             <label for="website_link">Website Link</label>
-            {{ form.website_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
-      </div>
+            <input type="text" name="website_link" class ='form-control' value={{artist.website_link}}>
+       </div>
 
-      <div class="form-group">
-          <label for="seeking_venue">Looking for Venues</label>
-          {{ form.seeking_venue(placeholder='Venue', autofocus = true) }}
-      </div>
+       <div class="form-group">
+             <label for="seeking_venue">Looking for Venue</label>
+             <input type="checkbox" name="seeking_venue" value={{artist.seeking_venue}} checked>
+       </div>
 
-      <div class="form-group">
-          <label for="seeking_description">Seeking Description</label>
-          {{ form.seeking_description(class_ = 'form-control', autofocus = true) }}
-      </div>
-      
+       <div class="form-group">
+            <label for="seeking_description">Seeking Description</label>
+            <input type="text" name="seeking_description" class ='form-control' value={{artist.seeking_description}}>
+       </div>
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>

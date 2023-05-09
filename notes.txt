@@ -26,3 +26,10 @@ main.html:
           {% endfor %}
         {% endif %}
       {% endwith %}
+
+
+
+show_artist.html:
+
+<h6>{{ show.start_time|datetime('full') }}</h6>
+<h6>{{ show.start_time|datetime('full') }}</h6>
