@@ -33,3 +33,11 @@ show_artist.html:
 
 <h6>{{ show.start_time|datetime('full') }}</h6>
 <h6>{{ show.start_time|datetime('full') }}</h6>
+
+show_venue.html:
+<h6>{{ show.start_time|datetime('full') }}</h6>
+<h6>{{ show.start_time|datetime('full') }}</h6>
+
+
+main.html:
+<li {% if request.path == '/fyyur/shows/' %} class="active" {% endif %}><a href="{% url 'shows' %}">Shows</a></li>

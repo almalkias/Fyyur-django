@@ -8,7 +8,7 @@ from django.contrib import messages
 def index(request):
   return render(request, 'fyyur/pages/home.html')
 
-
+# -------------------------------------------------------------------------
 def create_venue_form(request):
   if request.method == 'POST':
       try:
@@ -23,6 +23,7 @@ def create_venue_form(request):
           seeking_talent = True if len(
               request.POST.getlist('seeking_talent')) > 0 else False
           seeking_description = request.POST['seeking_description']
+          phone = request.POST['phone']
 
           venue = Venue(name=name,
                         city=city,
@@ -32,7 +33,8 @@ def create_venue_form(request):
                         image_link=image_link,
                         website=website,
                         seeking_talent=seeking_talent,
-                        seeking_description=seeking_description)
+                        seeking_description=seeking_description, 
+                        phone=phone)
 
           venue.save()
           messages.success(request, 'Venue ' + name + ' was successfully listed!')
@@ -59,6 +61,7 @@ def create_artist_form(request):
             seeking_venue = True if len(
                 request.POST.getlist('seeking_venue')) > 0 else False
             seeking_description = request.POST['seeking_description']
+            phone = request.POST['phone']
 
             artist = Artist(name=name,
                             city=city,
@@ -67,7 +70,8 @@ def create_artist_form(request):
                             image_link=image_link,
                             website=website,
                             seeking_venue=seeking_venue,
-                            seeking_description=seeking_description)
+                            seeking_description=seeking_description, 
+                            phone=phone)
 
             artist.save()
             messages.success(request, 'Artist ' + name + ' was successfully listed!')
@@ -79,13 +83,39 @@ def create_artist_form(request):
 
     else:
         return render(request, 'fyyur/forms/new_artist.html')
-
+# -------------------------------------------------------------------------
 
 def artists(request):
   data = Artist.objects.all()
   context = {'artists': data}
   return render(request, 'fyyur/pages/artists.html', context)
 
+
+def venues(request):
+    data = []
+    cities = []
+    venues = Venue.objects.all()
+
+    for venue in venues:
+        if venue.city not in cities:
+            cities.append(venue.city)
+            data.append({
+                'city': venue.city, 
+                'state': venue.state, 
+                'venues_lst': [{'id': venue.id, 'name': venue.name}]
+            })
+        else:
+            for e in data:
+                if e['city'] == venue.city:
+                    e['venues_lst'].append({
+                        'id': venue.id, 
+                        'name': venue.name
+                    })
+
+    context = {'areas': data}
+
+    return render(request, 'fyyur/pages/venues.html', context)
+# -------------------------------------------------------------------------
 
 def show_artist(request, artist_id):
     artist = Artist.objects.get(id=artist_id)
@@ -127,9 +157,54 @@ def show_artist(request, artist_id):
     #         })
     #         data['upcoming_shows_count'] += 1  
 
-    context = {'artist': artist}
+    context = {'artist': data}
     return render(request, 'fyyur/pages/show_artist.html', context)
 
+
+def show_venue(request, venue_id):
+    venue = Venue.objects.get(id=venue_id)
+    data = {
+        "id": venue_id,
+        "name": venue.name,
+        # "genres": venue.genres,
+        "address": venue.address,
+        "city": venue.city,
+        "state": venue.state,
+        "phone": venue.phone,
+        "website": venue.website,
+        "facebook_link": venue.facebook_link,
+        "seeking_talent": venue.seeking_talent,
+        "seeking_description": venue.seeking_description,
+        "image_link": venue.image_link, 
+        "past_shows": [],
+        "upcoming_shows": [],
+        "past_shows_count": 0,
+        "upcoming_shows_count": 0
+    }
+
+    # for show in venue.shows:
+    #     show_time = show.start_time.replace(tzinfo=utc)
+    #     current_time = datetime.now().replace(tzinfo=utc)
+    #     if show_time < current_time:
+    #         data['past_shows'].append({
+    #             "artist_id": show.artist_id,
+    #             "artist_name": show.artist.name,
+    #             "artist_image_link": show.artist.image_link,
+    #             'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+    #         })
+    #         data['past_shows_count'] += 1
+    #     else:
+    #         data['upcoming_shows'].append({
+    #             "artist_id": show.artist_id,
+    #             "artist_name": show.artist.name,
+    #             "artist_image_link": show.artist.image_link,
+    #             'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+    #         })
+    #         data['upcoming_shows_count'] += 1        
+
+    context = {'venue': data}
+    return render(request, 'fyyur/pages/show_venue.html', context)
+# -------------------------------------------------------------------------
 
 def edit_artist(request, artist_id):
   artist = Artist.objects.get(id=artist_id)
@@ -144,6 +219,7 @@ def edit_artist(request, artist_id):
     artist.website = request.POST['website_link']
     artist.seeking_venue = True if len(request.POST.getlist('seeking_venue')) > 0 else False
     artist.seeking_description = request.POST['seeking_description']
+    artist.phone = request.POST['phone']
 
     artist.save()
     return redirect('show_artist', artist_id=artist_id)
@@ -151,3 +227,29 @@ def edit_artist(request, artist_id):
   context = {'artist': artist}
 
   return render(request, 'fyyur/forms/edit_artist.html', context)
+
+
+def edit_venue(request, venue_id):
+  venue = Venue.objects.get(id=venue_id)
+
+  if request.method == 'POST':
+    venue.name = request.POST['name']
+    venue.city = request.POST['city']
+    venue.state = request.POST['state']
+    # genres = request.POST.getlist('genres')
+    venue.facebook_link = request.POST['facebook_link']
+    venue.image_link = request.POST['image_link']
+    venue.website = request.POST['website_link']
+    venue.seeking_talent = True if len(request.POST.getlist('seeking_talent')) > 0 else False
+    venue.seeking_description = request.POST['seeking_description']
+    venue.address = request.POST['address']
+    venue.phone = request.POST['phone']
+
+    venue.save()
+    return redirect('show_venue', venue_id=venue_id)
+    
+  context = {'venue': venue}
+
+  return render(request, 'fyyur/forms/edit_venue.html', context)
+
+# -------------------------------------------------------------------------
