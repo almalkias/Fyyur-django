@@ -4,22 +4,22 @@
   <div class="form-wrapper">
     <form method="post" class="form" action="{% url 'edit_venue' venue_id=venue.id %}">
       {% csrf_token %}
-      <h3 class="form-heading">edit artist <a href="{% url 'index' %}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+      <h3 class="form-heading">edit venue <a href="{% url 'index' %}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
       <div class="form-group">
 
         <label for="name">Name</label>
-        <input type="text" name="name" class ='form-control' value={{venue.name}} required>
+        <input type="text" name="name" class ='form-control' value="{{venue.name}}" required>
       </div>
 
       <div class="form-group">
           <label>City & State</label>
           <div class="form-inline">
             <div class="form-group">
-              <input type="text" name="city" class ='form-control' placeholder='City' value={{venue.city}} required>
+              <input type="text" name="city" class ='form-control' placeholder='City' value="{{venue.city}}" required>
             </div>
 
             <div class="form-group">
-              <select name="state" class ='form-control' value={{venue.state}} required>
+              <select name="state" class ='form-control' value="{{venue.state}}" required>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
                 <option value="AZ">Arizona</option>
@@ -32,12 +32,12 @@
 
       <div class="form-group">
         <label for="address">address</label>
-        <input type="text" name="address" class ='form-control' value={{venue.address}}>
+        <input type="text" name="address" class ='form-control' value="{{venue.address}}">
       </div>
       
       <div class="form-group">
           <label for="phone">Phone</label>
-          <input type="text" name="phone" class ='form-control' value={{venue.phone}}>
+          <input type="text" name="phone" class ='form-control' value="{{venue.phone}}">
       </div>
 
       <div class="form-group">
@@ -54,27 +54,27 @@
       
       <div class="form-group">
           <label for="facebook_link">Facebook Link</label>
-          <input type="text" name="facebook_link" class ='form-control' value={{venue.facebook_link}}>
+          <input type="text" name="facebook_link" class ='form-control' value="{{venue.facebook_link}}">
        </div>
       
        <div class="form-group">
           <label for="image_link">Image Link</label>
-          <input type="text" name="image_link" class ='form-control' value={{venue.image_link}}>
+          <input type="text" name="image_link" class ='form-control' value="{{venue.image_link}}">
        </div>
 
        <div class="form-group">
             <label for="website_link">Website Link</label>
-            <input type="text" name="website_link" class ='form-control' value={{venue.website}}>
+            <input type="text" name="website_link" class ='form-control' value="{{venue.website}}">
        </div>
 
        <div class="form-group">
-             <label for="seeking_artist">Looking for Venue</label>
-             <input type="checkbox" name="seeking_artist" {% if venue.seeking_artist %}checked {% endif %}>
+             <label for="seeking_talent">Looking for Venue</label>
+             <input type="checkbox" name="seeking_talent" {% if venue.seeking_talent %} checked {% endif %}>
        </div>
 
        <div class="form-group">
             <label for="seeking_description">Seeking Description</label>
-            <input type="text" name="seeking_description" class ='form-control' value={{venue.seeking_description}}>
+            <input type="text" name="seeking_description" class ='form-control' value="{{venue.seeking_description}}">
        </div>
       <input type="submit" value="Edit Venue" class="btn btn-primary btn-lg btn-block">
     </form>

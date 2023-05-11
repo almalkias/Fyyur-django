@@ -14,6 +14,9 @@ class Venue(models.Model):
     seeking_talent = models.BooleanField()
     seeking_description = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+
 
 class Artist(models.Model):
     name = models.CharField(max_length=30)
@@ -26,3 +29,6 @@ class Artist(models.Model):
     website = models.CharField(max_length=30)
     seeking_venue = models.BooleanField()
     seeking_description = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
