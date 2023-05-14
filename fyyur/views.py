@@ -1,14 +1,14 @@
 from django.shortcuts import render, HttpResponse, redirect
-from .models import Venue, Artist
+from .models import Venue, Artist, Show
 from django.contrib import messages
+from datetime import datetime, date
 # Create your views here.
-
 
 def index(request):
     return render(request, 'fyyur/pages/home.html')
 
-
 # -------------------------------------------------------------------------
+
 def create_venue_form(request):
     if request.method == 'POST':
         try:
@@ -22,7 +22,7 @@ def create_venue_form(request):
             website = request.POST['website_link']
             seeking_talent = True if 'seeking_talent' in request.POST else False
             seeking_description = request.POST['seeking_description']
-            phone = request.POST['phone']
+            phone = int(request.POST['phone'])
 
             venue = Venue(name=name,
                           city=city,
@@ -36,15 +36,12 @@ def create_venue_form(request):
                           phone=phone)
 
             venue.save()
-            messages.success(request,
-                             'Venue ' + name + ' was successfully listed!')
+            messages.success(request, 'Venue ' + name + ' was successfully listed!')
             return redirect('index')
 
         except:
-            messages.error(
-                request,
-                'An error occurred. Venue ' + name + ' could not be listed.')
-            return redirect('index')
+            messages.error(request, 'An error occurred. Venue ' + name + ' could not be listed.')
+            return redirect('create_venue_form')
 
     else:
         return render(request, 'fyyur/forms/new_venue.html')
@@ -75,22 +72,17 @@ def create_artist_form(request):
                             phone=phone)
 
             artist.save()
-            messages.success(request,
-                             'Artist ' + name + ' was successfully listed!')
+            messages.success(request, 'Artist ' + name + ' was successfully listed!')
             return redirect('index')
 
         except:
-            messages.error(
-                request,
-                'An error occurred. Artist ' + name + ' could not be listed.')
-            return redirect('index')
+            messages.error(request, 'An error occurred. Artist ' + name + ' could not be listed.')
+            return redirect('create_artist_form')
 
     else:
         return render(request, 'fyyur/forms/new_artist.html')
 
-
 # -------------------------------------------------------------------------
-
 
 def artists(request):
     data = Artist.objects.all()
@@ -126,9 +118,7 @@ def venues(request):
 
     return render(request, 'fyyur/pages/venues.html', context)
 
-
 # -------------------------------------------------------------------------
-
 
 def show_artist(request, artist_id):
     artist = Artist.objects.get(id=artist_id)
@@ -150,25 +140,25 @@ def show_artist(request, artist_id):
         "upcoming_shows_count": 0
     }
 
-    # for show in artist.shows:
-    #     show_time = show.start_time.replace(tzinfo=utc)
-    #     current_time = datetime.now().replace(tzinfo=utc)
-    #     if show_time < current_time:
-    #         data['past_shows'].append({
-    #             "venue_id": show.venue_id,
-    #             "venue_name": show.venue.name,
-    #             "venue_image_link": show.venue.image_link,
-    #             'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
-    #         })
-    #         data['past_shows_count'] += 1
-    #     else:
-    #         data['upcoming_shows'].append({
-    #             "venue_id": show.venue_id,
-    #             "venue_name": show.venue.name,
-    #             "venue_image_link": show.venue.image_link,
-    #             'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
-    #         })
-    #         data['upcoming_shows_count'] += 1
+    for show in Show.objects.filter(artist=artist).all():
+        show_time = show.start_time
+        current_time = date.today()
+        if show_time.date() < current_time:
+            data['past_shows'].append({
+                "venue_id": show.venue.id,
+                "venue_name": show.venue.name,
+                "venue_image_link": show.venue.image_link,
+                'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+            })
+            data['past_shows_count'] += 1
+        else:
+            data['upcoming_shows'].append({
+                "venue_id": show.venue.id,
+                "venue_name": show.venue.name,
+                "venue_image_link": show.venue.image_link,
+                'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+            })
+            data['upcoming_shows_count'] += 1
 
     context = {'artist': data}
     return render(request, 'fyyur/pages/show_artist.html', context)
@@ -195,32 +185,30 @@ def show_venue(request, venue_id):
         "upcoming_shows_count": 0
     }
 
-    # for show in venue.shows:
-    #     show_time = show.start_time.replace(tzinfo=utc)
-    #     current_time = datetime.now().replace(tzinfo=utc)
-    #     if show_time < current_time:
-    #         data['past_shows'].append({
-    #             "artist_id": show.artist_id,
-    #             "artist_name": show.artist.name,
-    #             "artist_image_link": show.artist.image_link,
-    #             'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
-    #         })
-    #         data['past_shows_count'] += 1
-    #     else:
-    #         data['upcoming_shows'].append({
-    #             "artist_id": show.artist_id,
-    #             "artist_name": show.artist.name,
-    #             "artist_image_link": show.artist.image_link,
-    #             'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
-    #         })
-    #         data['upcoming_shows_count'] += 1
+    for show in Show.objects.filter(venue=venue).all():
+        show_time = show.start_time
+        current_time = date.today()
+        if show_time.date() < current_time:
+            data['past_shows'].append({
+                "artist_id": show.artist.id,
+                "artist_name": show.artist.name,
+                "artist_image_link": show.artist.image_link,
+                'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+            })
+            data['past_shows_count'] += 1
+        else:
+            data['upcoming_shows'].append({
+                "artist_id": show.artist.id,
+                "artist_name": show.artist.name,
+                "artist_image_link": show.artist.image_link,
+                'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+            })
+            data['upcoming_shows_count'] += 1
 
     context = {'venue': data}
     return render(request, 'fyyur/pages/show_venue.html', context)
 
-
 # -------------------------------------------------------------------------
-
 
 def edit_artist(request, artist_id):
     artist = Artist.objects.get(id=artist_id)
@@ -241,7 +229,6 @@ def edit_artist(request, artist_id):
         return redirect('show_artist', artist_id=artist_id)
 
     context = {'artist': artist}
-
     return render(request, 'fyyur/forms/edit_artist.html', context)
 
 
@@ -265,17 +252,14 @@ def edit_venue(request, venue_id):
         return redirect('show_venue', venue_id=venue_id)
 
     context = {'venue': venue}
-
     return render(request, 'fyyur/forms/edit_venue.html', context)
 
-
 # -------------------------------------------------------------------------
+
 def search_venues(request):
     if request.method == 'POST':
         find_venues = Venue.objects.filter(
             name__contains=request.POST.get('search_term', '')).all()
-
-        print(request.POST.get('search_term', ''))
 
         response = {"count": len(find_venues), "data": []}
         for venue in find_venues:
@@ -309,9 +293,7 @@ def search_artists(request):
         }
         return render(request, 'fyyur/pages/search_venues.html', context)
 
-
 # -------------------------------------------------------------------------
-
 
 def delete_venue(request, venue_id):
     venue = Venue.objects.get(id=venue_id)
@@ -325,3 +307,53 @@ def delete_artist(request, artist_id):
     artist.delete()
 
     return redirect('artists')
+
+# -------------------------------------------------------------------------
+
+def create_shows(request):
+
+    if request.method == 'POST':
+        artist_id = request.POST['artist_id']
+        venue_id = request.POST['venue_id']
+        start_time = datetime.strptime(request.POST['start_time'], '%Y-%m-%dT%H:%M')
+
+        venue = Venue.objects.get(id=venue_id)
+        artist = Artist.objects.get(id=artist_id)
+
+        if start_time.date() < date.today():
+            messages.error(request, 'old date')
+            return redirect('create_shows')
+
+        for show in Show.objects.filter(venue=venue).all():
+            if show.start_time.date() == start_time.date() and show.venue == venue:
+                messages.error(request, 'venue not avaliable in this date')
+                return redirect('create_shows')
+
+        for show in Show.objects.filter(artist=artist).all():
+            if show.start_time.date() == start_time.date() and show.artist == artist:
+                messages.error(request, 'artist not avaliable in this date')
+                return redirect('create_shows')
+
+        show = Show(start_time=start_time, artist=artist, venue=venue)
+        show.save()
+        messages.success(request, 'show created successfully')
+        return redirect('index')
+
+    return render(request, 'fyyur/forms/new_show.html')
+
+
+def shows(request):
+    shows = Show.objects.all()
+    data=[]
+    for show in shows:
+        data.append({
+            'artist_image_link': show.artist.image_link, 
+            'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S'), 
+            'artist_id': show.artist.id, 
+            'artist_name': show.artist.name,
+            'venue_id': show.venue.id, 
+            'venue_name': show.venue.name
+        })
+
+    context = {'shows': data}
+    return render(request, 'fyyur/pages/shows.html', context)

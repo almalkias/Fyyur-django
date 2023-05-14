@@ -1,43 +1,8 @@
-main.html:
-
-{% if (request.endpoint == 'venues') or
-                (request.endpoint == 'search_venues') or
-                (request.endpoint == 'show_venue') %}
-
-{% endif %}
-              {% if (request.endpoint == 'artists') or
-                (request.endpoint == 'search_artists') or
-                (request.endpoint == 'show_artist') %}
-
-              {% endif %}
-
-
-<li {% if request.endpoint == 'venues' %} class="active" {% endif %}><a href="{{ url_for('venues') }}">Venues</a></li>
-            <li {% if request.endpoint == 'artists' %} class="active" {% endif %}><a href="{{ url_for('artists') }}">Artists</a></li>
-            <li {% if request.endpoint == 'shows' %} class="active" {% endif %}><a href="{{ url_for('shows') }}">Shows</a></li>
-
-{% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-block alert-info fade in">
-              <a class="close" data-dismiss="alert">&times;</a>
-              {{ message }}
-            </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-
-
 
 show_artist.html:
-
 <h6>{{ show.start_time|datetime('full') }}</h6>
 <h6>{{ show.start_time|datetime('full') }}</h6>
 
 show_venue.html:
 <h6>{{ show.start_time|datetime('full') }}</h6>
 <h6>{{ show.start_time|datetime('full') }}</h6>
-
-
-main.html:
-<li {% if request.path == '/fyyur/shows/' %} class="active" {% endif %}><a href="{% url 'shows' %}">Shows</a></li>
