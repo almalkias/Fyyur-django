@@ -16,7 +16,7 @@ def create_venue_form(request):
             city = request.POST['city']
             state = request.POST['state']
             address = request.POST['address']
-            # genres = request.POST.getlist('genres')
+            genres = request.POST.getlist('genres')
             facebook_link = request.POST['facebook_link']
             image_link = request.POST['image_link']
             website = request.POST['website_link']
@@ -28,6 +28,7 @@ def create_venue_form(request):
                           city=city,
                           state=state,
                           address=address,
+                          genres=genres,
                           facebook_link=facebook_link,
                           image_link=image_link,
                           website=website,
@@ -53,7 +54,7 @@ def create_artist_form(request):
             name = request.POST['name']
             city = request.POST['city']
             state = request.POST['state']
-            # genres = request.POST.getlist('genres')
+            genres = request.POST.getlist('genres')
             facebook_link = request.POST['facebook_link']
             image_link = request.POST['image_link']
             website = request.POST['website_link']
@@ -64,6 +65,7 @@ def create_artist_form(request):
             artist = Artist(name=name,
                             city=city,
                             state=state,
+                            genres=genres,
                             facebook_link=facebook_link,
                             image_link=image_link,
                             website=website,
