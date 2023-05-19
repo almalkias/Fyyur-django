@@ -85,16 +85,18 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'fyyur_django',
-       'USER': 'almalki',
-       'HOST': 'localhost',
+       'NAME': 'neondb',
+       'USER': 'almalkias',
+       'HOST': 'ep-cold-rain-649099.ap-southeast-1.aws.neon.tech',
        'PORT': '5432',
+       'PASSWORD': 'zS1ThHo6CyKr'
    }
 }
-
+# 'postgresql://almalkias:zS1ThHo6CyKr@ep-cold-rain-649099.ap-southeast-1.aws.neon.tech/neondb'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
